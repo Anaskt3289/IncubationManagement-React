@@ -1,0 +1,36 @@
+.mainDiv{
+    overflow-x: scroll;
+    padding: 1%;
+}
+.mainDiv::-webkit-scrollbar{
+    display: none;
+}
+.wrapper{
+    width: 1100px;
+}
+.HorizontalDivider{
+   margin:3% 1%;
+   background-color: #ced6de;
+   height: 3px;
+}
+.downslots{
+    width: 23%;
+    margin-right: 1%;
+    margin-left: 1%;
+}
+.downslotMain{
+    display: flex;
+    overflow-x: scroll;
+}
+
+
+.availableSlot:hover{
+    background-color: #bcbcd1;
+    cursor: pointer;
+    
+}
+
+.errMsg{
+    color: red;
+    margin-top: 3px;
+}

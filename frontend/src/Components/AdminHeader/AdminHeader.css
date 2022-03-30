@@ -1,0 +1,12 @@
+.sidebar{
+    width: 16vw;
+    background-color: #14191c;
+    color: white;
+    height: 100vh;
+}
+
+@media(max-width:632px){
+    .listText{
+        display: none;
+    }
+}
