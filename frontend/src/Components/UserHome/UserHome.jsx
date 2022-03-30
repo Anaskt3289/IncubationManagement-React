@@ -10,16 +10,21 @@ import { ServerURL } from '../../Constants/Constants'
 function UserHome() {
 
   const navigate = useNavigate()
-  let user = JSON.parse(localStorage.getItem("user"));
-  let userId
-  if (user) {
-    userId = user.userid;
-  }
+  const [userId ,setUserId] = useState(null)
+ 
 
   useEffect(() => {
     
+    const user = JSON.parse(localStorage.getItem("user"))
     if (user) {
+
       window.scrollTo(0, 0);
+ 
+        setUserId(user.id)
+  
+      if(user.slot){
+        navigate('/slotAllocated')
+      }
     } else {
       navigate('/')
     }
@@ -65,7 +70,6 @@ function UserHome() {
     
     if (!formData.name || !formData.address || !formData.city || !formData.state || !formData.email || !formData.phone || !formData.companyName ||!formData.teamAndBackground || !formData.companyAndProducts || !formData.problemTryingToSolve || !formData.uniqueAboutSolution || !formData.propositionToCustomer || !formData.competitorsAndAdvantage || !formData.revenueModel || !formData.marketSizeOfProduct || !formData.HowToMarketProduct || !formData.incubationType || !formData.businessProposel) {
       setErrMsg('Enter the required fields')
-      console.log(userId);
       window.scrollTo(0, 0);
     }else{
       setErrMsg(null)
@@ -80,7 +84,7 @@ function UserHome() {
           'Content-Type': 'multipart/form-data'
         }
     }).then((resp)=>{
-        console.log(resp.data.applicationId);
+        navigate('/applicationProcessing')
       }).catch((err)=>{
         console.log(err);
       })

@@ -75,6 +75,8 @@ router.post('/login', function (req, res, next) {
             id: response.user._id.toString(),
             name: response.user.name,
             email: response.user.email,
+            slot:response.user.bookedSlot
+
           };
 
           res.status(200).cookie("token", token, {httpOnly: true,}).json(obj);

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {Box,List,ListItem,Grid} from '@mui/material'
 import ListItemText from '@mui/material/ListItemText';
 import './AdminHeader.css'
@@ -16,6 +16,15 @@ function AdminSidebar() {
   const navigate = useNavigate()
   const IconsArray = [<GroupIcon/> , <CalendarViewMonthIcon/>, <ReceiptLongIcon/>,<LogoutIcon/>]
   const sidebarRoutes = ['applicationList' , 'recordTrack', 'bookingSlots', 'logout']
+  const [refresh , setRefresh] = useState(false)
+
+  useEffect(()=>{
+    let admin = localStorage.getItem("admin")
+      if (!admin) {
+         navigate('/admin')
+      }
+  },[refresh])
+
   return (
     <div>
      
@@ -27,7 +36,9 @@ function AdminSidebar() {
     >
       <List >
         {['Application List', 'Record Track', 'Booking Slots', 'Logout'].map((text, index) => (
-          <ListItem button key={text} onClick={text==='Logout' ? ()=>localStorage.removeItem("admin") :()=>navigate(`/admin/${sidebarRoutes[index]}`)}>
+          <ListItem button key={text} onClick={text==='Logout' ? ()=>{localStorage.removeItem("admin")
+          setRefresh(!refresh)
+          } :()=>navigate(`/admin/${sidebarRoutes[index]}`)}>
             <Grid container>
 
               <Grid item xs={12} md={3}>

@@ -51,13 +51,8 @@ function Login(props) {
                 })
             }else{
                 axios.post(`${ServerURL}/login`,loginData).then((response)=>{
-                    let userData = {
-                        userid:response.data.id,
-                        name:response.data.name,
-                        email:response.data.email
-                      };
                     
-                      localStorage.setItem("user", JSON.stringify(userData));
+                      localStorage.setItem("user", JSON.stringify(response.data));
                     navigate('/home')
                 }).catch((err)=>{
                     console.log(err);

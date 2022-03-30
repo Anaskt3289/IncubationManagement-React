@@ -5,6 +5,8 @@ import LoginPage from './Pages/LoginPage'
 import SignupPage from './Pages/SignupPage';
 import UserHomePage from './Pages/UserHomePage';
 import UserHomeNextPage from './Pages/UserHomeNextPage'
+import ApplicationProcessingPage from './Pages/ApplicationProcessingPage';
+import SlotAllocatedPage from './Pages/SlotAllocatedPage';
 
 import AdminLoginPage from './Pages/Admin/AdminLoginPage'
 import ApplicationListPage from './Pages/Admin/ApplicationListPage';
@@ -45,6 +47,10 @@ function App() {
             <Route path='/admin/bookingSlots' element={<BookingSlotPage/>} />
 
             <Route path='/admin/viewCompanyDetails' element={<CompanyDetailsPage/>} />
+
+            <Route path='/applicationProcessing' element={<ApplicationProcessingPage/>} />
+
+            <Route path='/slotAllocated' element={<SlotAllocatedPage/>} />
 
          
 

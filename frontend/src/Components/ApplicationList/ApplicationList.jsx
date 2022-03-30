@@ -22,6 +22,7 @@ function ApplicationList() {
 
   const [NEW, setNew] = useState([])
   const [PENDING, setPending] = useState([])
+  const [refresh ,setRefresh] =useState(false)
 
   const {setCompanydetails} = useContext(companyContext)
   
@@ -41,20 +42,15 @@ function ApplicationList() {
         console.log(err);
       })
     }
-  }, [])
+  }, [refresh])
 
   const changeStatus = (applicationId,status)=>{
     console.log(applicationId);
     console.log(status);
     axios.get(`${ServerURL}/admin/changeStatus/${applicationId}/${status}`).then(()=>{
 
-      axios.get(`${ServerURL}/admin/getApplications`).then((resp) => {
-        setNew(resp.data.NEW)
-        setPending(resp.data.PENDING)
+      setRefresh(!refresh)
 
-      }).catch((err) => {
-        console.log(err);
-      })
 
     }).catch((err)=>{
       console.log(err);

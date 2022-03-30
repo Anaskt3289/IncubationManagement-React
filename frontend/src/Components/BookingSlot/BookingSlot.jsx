@@ -24,6 +24,7 @@ function BookingSlot() {
    const [selectedCompany, setSelectedCompany] = useState(null)
    const [companies, setCompanies] = useState([])
    const [errMsg , setErrMsg] = useState(null)
+   const [refresh , setRefresh] = useState(false) 
 
    const handleClose = () => setOpen(false);
 
@@ -55,6 +56,7 @@ function BookingSlot() {
             axios.get(`${ServerURL}/admin/getApplications`).then((resp) => {
 
                setCompanies(resp.data.ActiveCompanies)
+               handleClose()
 
             }).catch((err) => {
                console.log(err);
@@ -64,7 +66,7 @@ function BookingSlot() {
             console.log(err);
          })
       }
-   },[])
+   },[refresh])
 
    const bookSlot = () => {
       if (!selectedCompany){
@@ -76,25 +78,10 @@ function BookingSlot() {
             selectedCompany
          }
          axios.post(`${ServerURL}/admin/bookSlot`,bookingData).then(()=>{
-            axios.get(`${ServerURL}/admin/getBookingSlots`).then(async (resp) => {
-               setSlotsA(resp.data.slotsA)
-               setSlotsB(resp.data.slotsB)
-               setSlotsC(resp.data.slotsC)
-               setSlotsD(resp.data.slotsD)
-               setSlotsE(resp.data.slotsE)
-   
-               axios.get(`${ServerURL}/admin/getApplications`).then((resp) => {
-   
-                  setCompanies(resp.data.ActiveCompanies)
-                  handleClose()
-   
-               }).catch((err) => {
-                  console.log(err);
-               })
-   
-            }).catch((err) => {
-               console.log(err);
-            })
+
+
+            setRefresh(!refresh)
+           
             
          }).catch((err)=>{
             console.log(err);

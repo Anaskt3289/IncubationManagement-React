@@ -1,5 +1,6 @@
 import React from 'react'
 import UserHome from '../Components/UserHome/UserHome'
+import AdminAppbar from '../Components/AdminHeader/AdminAppbar'
 
 
 
@@ -7,7 +8,7 @@ import UserHome from '../Components/UserHome/UserHome'
 function UserHomePage() {
   return (
      <div>
-   
+   <AdminAppbar user/>
      <UserHome/> 
 
     </div>
