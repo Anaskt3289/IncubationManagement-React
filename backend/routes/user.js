@@ -8,15 +8,34 @@ const fs = require('fs')
 const jwtSecret = process.env.JWT_SECRET
 
 var storage = multer.diskStorage({
-  destination: function (req,file,cb) {
-    cb(null,'./public/temp-logo')
+  destination: function (req, file, cb) {
+    cb(null, './public/temp-logo')
   },
-  filename:function (req,file,cb) {
-    cb(null,'companylogo.jpg')
+  filename: function (req, file, cb) {
+    cb(null, 'companylogo.jpg')
   }
 })
 
-var upload = multer({storage:storage}).single('logo')
+var upload = multer({ storage: storage }).single('logo')
+
+
+const verifyJWT = (req, res, next) => {
+
+  let jwtkey = req.headers.authorization.split(' ')
+  let token = jwtkey[1]
+
+  if (token) {
+    let auth = jwt.verify(token, jwtSecret)
+
+    if (auth) {
+      console.log('authorization success ...');
+      next()
+    } else {
+      console.log('authorization failed');
+      res.status(400).json({ errMsg: 'authorization failed' })
+    }
+  }
+}
 
 router.get('/', function (req, res, next) {
   res.send('server started')
@@ -54,15 +73,15 @@ router.post('/signup', function (req, res, next) {
 
 
 router.post('/login', function (req, res, next) {
-  try{
+  try {
     console.table(req.body)
-    const {email ,pword} = req.body
-    if(!email || !pword){
-      res.status(400).json({errMsg:'Enter required details'})
-    }else{
-      userHelper.verifyUser(req.body).then((response)=>{
-        if(response.userVerified){
-        
+    const { email, pword } = req.body
+    if (!email || !pword) {
+      res.status(400).json({ errMsg: 'Enter required details' })
+    } else {
+      userHelper.verifyUser(req.body).then((response) => {
+        if (response.userVerified) {
+
           let userId = response.user._id.toString();
           const token = jwt.sign(
             {
@@ -72,54 +91,58 @@ router.post('/login', function (req, res, next) {
           );
 
           let obj = {
+
+            token: token,
             id: response.user._id.toString(),
             name: response.user.name,
             email: response.user.email,
-            slot:response.user.bookedSlot
+            slot: response.user.bookedSlot
+
 
           };
 
-          res.status(200).cookie("token", token, {httpOnly: true,}).json(obj);
+          res.status(200).cookie("token", token, { httpOnly: true, }).json(obj);
 
-        }else{
-          res.status(400).json({errMsg:'Entered credentials are invalid'})
+        } else {
+          res.status(400).json({ errMsg: 'Entered credentials are invalid' })
         }
       })
     }
-  }catch (err){
+  } catch (err) {
     console.log(err);
   }
 });
 
-router.post('/submitApplication', function (req, res, next) {
-  
-    
-    upload(req,res,function(err){
-      console.table(JSON.parse(req.body.details))
+router.post('/submitApplication',verifyJWT, function (req, res, next) {
 
-      if(err instanceof multer.MulterError){
-        return res.status(500).json(err)
-      }else if(err){
-        return res.status(500).json(err)
-      }else{
-        let applicationDetails = JSON.parse(req.body.details)
 
-        userHelper.submitApplication(applicationDetails).then((resp)=>{
-          
-            var oldPath = './public/temp-Logo/companylogo.jpg'
-            var newPath = './public/CompanyLogo/' + applicationDetails.userId + '.jpg'
+  upload(req, res, function (err) {
+    console.table(JSON.parse(req.body.details))
 
-            fs.rename(oldPath, newPath,function (err) {
-                if (err)
-                  throw err;
-              })
-          res.status(200).json({msg:'success'})
-        }).catch((err)=>{
-          console.log(err);
-          res.status(400).json(err)
+    if (err instanceof multer.MulterError) {
+      return res.status(500).json(err)
+    } else if (err) {
+      return res.status(500).json(err)
+    } else {
+      let applicationDetails = JSON.parse(req.body.details)
+
+
+      userHelper.submitApplication(applicationDetails).then((resp) => {
+
+        var oldPath = './public/temp-Logo/companylogo.jpg'
+        var newPath = './public/CompanyLogo/' + applicationDetails.userId + '.jpg'
+
+        fs.rename(oldPath, newPath, function (err) {
+          if (err)
+            throw err;
         })
-      }
-    })
+        res.status(200).json({ msg: 'success' })
+      }).catch((err) => {
+        console.log(err);
+        res.status(400).json(err)
+      })
+    }
+  })
 
 });
 

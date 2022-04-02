@@ -12,26 +12,34 @@ function UserHome() {
   const navigate = useNavigate()
   const [userId ,setUserId] = useState(null)
  
-
+  
+  
+  const user = JSON.parse(localStorage.getItem("user")) 
+  
   useEffect(() => {
     
-    const user = JSON.parse(localStorage.getItem("user"))
     if (user) {
-
+      
       window.scrollTo(0, 0);
- 
-        setUserId(user.id)
-  
+      setUserId(user.id)
+      
       if(user.slot){
         navigate('/slotAllocated')
       }
     } else {
       navigate('/')
     }
-
+    
   }, [])
-
-
+  
+  const config = {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${user.token}`,
+    }
+  };
+  
+  
   const initialState = {
     name: '',
     address: '',
@@ -68,7 +76,7 @@ function UserHome() {
 
   const handleSubmit = () => {
     
-    if (!formData.name || !formData.address || !formData.city || !formData.state || !formData.email || !formData.phone || !formData.companyName ||!formData.teamAndBackground || !formData.companyAndProducts || !formData.problemTryingToSolve || !formData.uniqueAboutSolution || !formData.propositionToCustomer || !formData.competitorsAndAdvantage || !formData.revenueModel || !formData.marketSizeOfProduct || !formData.HowToMarketProduct || !formData.incubationType || !formData.businessProposel) {
+    if (!logo||!formData.name || !formData.address || !formData.city || !formData.state || !formData.email || !formData.phone || !formData.companyName ||!formData.teamAndBackground || !formData.companyAndProducts || !formData.problemTryingToSolve || !formData.uniqueAboutSolution || !formData.propositionToCustomer || !formData.competitorsAndAdvantage || !formData.revenueModel || !formData.marketSizeOfProduct || !formData.HowToMarketProduct || !formData.incubationType || !formData.businessProposel) {
       setErrMsg('Enter the required fields')
       window.scrollTo(0, 0);
     }else{
@@ -79,11 +87,7 @@ function UserHome() {
       data.append('logo',logo)
       data.append('details',JSON.stringify(applicationData))
 
-      axios.post(`${ServerURL}/submitApplication`,data,{
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-    }).then((resp)=>{
+      axios.post(`${ServerURL}/submitApplication`,data,config).then((resp)=>{
         navigate('/applicationProcessing')
       }).catch((err)=>{
         console.log(err);
